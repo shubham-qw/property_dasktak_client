@@ -1,9 +1,13 @@
 "use client";
 
-import React from 'react';
+import React , {useState} from 'react';
+import AuthModal from '../ui/AuthModal';
 
 const Header = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   return (
+    <>
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -32,7 +36,7 @@ const Header = () => {
 
           {/* Login Button */}
           <div className="flex items-center space-x-4">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+            <button onClick={() => setIsAuthModalOpen(true)} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
               Login/Sign in
             </button>
             
@@ -46,6 +50,8 @@ const Header = () => {
         </div>
       </div>
     </header>
+    <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const PostPropertySection = () => {
   return (
@@ -11,7 +12,9 @@ const PostPropertySection = () => {
           You can post your property here for free
         </p>
         <button className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform duration-300">
-          Post Property
+          <Link href="/properties/post">
+            Post Property
+          </Link>
         </button>
       </div>
     </section>

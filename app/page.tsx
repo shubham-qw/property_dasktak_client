@@ -1,4 +1,3 @@
-import Header from './components/layout/Header';
 import HeroSection from './components/sections/HeroSection';
 import ServicesSection from './components/sections/ServicesSection';
 import ProjectsSection from './components/sections/ProjectsSection';
@@ -7,12 +6,10 @@ import CitiesSection from './components/sections/CitiesSection';
 import BudgetSection from './components/sections/BudgetSection';
 import PGHostelSection from './components/sections/PGHostelSection';
 import TestimonialsSection from './components/sections/TestimonialsSection';
-import Footer from './components/layout/Footer';
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Header />
       <HeroSection />
       <ServicesSection />
       <ProjectsSection />
@@ -21,7 +18,6 @@ export default function Home() {
       <BudgetSection />
       <PGHostelSection />
       <TestimonialsSection />
-      <Footer />
     </main>
   );
 } 
