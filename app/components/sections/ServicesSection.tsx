@@ -36,11 +36,11 @@ const ServicesSection = () => {
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-3xl font-bold text-gray-900">
             A One-Stop Shop for all Your Real Estate Needs
           </h2>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+          <button className="bg-[#ce6d44] hover:bg-[#a35136] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
             See more
           </button>
         </div>

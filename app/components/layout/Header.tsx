@@ -8,12 +8,12 @@ const Header = () => {
 
   return (
     <>
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-[#272727] shadow-sm border-b border-[#272727]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[#cc6c43]">
               Property Dastak
             </h1>
           </div>
@@ -22,13 +22,13 @@ const Header = () => {
           <nav className="hidden md:flex space-x-8">
             <a 
               href="/insights" 
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+              className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors "
             >
               Insights
             </a>
             <a 
               href="/owners" 
-              className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+              className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors "
             >
               Owners
             </a>

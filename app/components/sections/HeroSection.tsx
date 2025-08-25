@@ -10,27 +10,24 @@ const HeroSection = () => {
   const tabs = ['Buy', 'Rent', 'PG/Hostel', 'Commercial', 'Plots/Land'];
 
   return (
-    <section className="relative bg-gradient-to-r from-gray-800 to-gray-900 text-white">
-      {/* Background Image */}
-      <div className="absolute inset-0 bg-cover bg-center" style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80')",
-        backgroundBlendMode: 'overlay'
-      }}>
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      </div>
+    <section className="relative bg-[#272727] min-h-screen flex items-center justify-between px-12">
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-0">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-8">
-            <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-              Unlock the Door With your Dream Start Here
-            </h1>
+          <div className="z-10">
+            <p className="text-white text-[60px] font-bold leading-tight">
+              Unlock the Door With your Dream
+            </p>
+            <p className="text-white text-[120px] font-bold leading-tight">
+              Start Here
+            </p>
             
             {/* Search Section */}
             <div className="bg-white rounded-lg p-6 shadow-xl">
               {/* Tabs */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-5 mb-6">
                 {tabs.map((tab) => (
                   <button
                     key={tab}
@@ -84,18 +81,12 @@ const HeroSection = () => {
           </div>
 
           {/* Right Content - House Image */}
-          <div className="hidden lg:block">
-            <div className="relative">
-              <div className="w-full h-96 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                <div className="absolute inset-0 bg-black bg-opacity-20 rounded-lg"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="text-6xl mb-4">🏠</div>
-                    <p className="text-xl font-semibold">Find Your Dream Home</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="w-[800px] h-[800px] overflow-hidden rounded-t-[50%] rounded-b-none">
+            <img 
+              src="/assets/Villa.jpg" 
+              alt="Curved Top Image" 
+              className="w-full h-full object-cover" 
+            />
           </div>
         </div>
       </div>

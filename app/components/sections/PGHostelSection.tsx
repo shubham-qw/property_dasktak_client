@@ -38,7 +38,7 @@ const PGHostelSection = () => {
               India leading PG Booking website, Over 30,000 Pg, Rooms in India.
             </p>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+          <button className="bg-[#ce6d44] hover:bg-[#a35136] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
             Book Now
           </button>
         </div>
@@ -65,7 +65,7 @@ const PGHostelSection = () => {
                 </p>
                 
                 {/* Book Now Button */}
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-md text-sm font-medium transition-colors group-hover:scale-105 transform duration-300">
+                <button className="w-full bg-[#ce6d44] hover:bg-[#a35136] text-white py-2 rounded-md text-sm font-medium transition-colors group-hover:scale-105 transform duration-300">
                   Book Now
                 </button>
               </div>

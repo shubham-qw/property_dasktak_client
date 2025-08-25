@@ -28,7 +28,7 @@ const ProjectsSection = () => {
           <h2 className="text-3xl font-bold text-gray-900">
             High demand projects in Delhi
           </h2>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+          <button className="bg-[#ce6d44] hover:bg-[#a35136] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
             Know more
           </button>
         </div>

@@ -2,7 +2,8 @@
 import { useWizard } from "../WizardContext";
 import clsx from "clsx";
 
-const PRIMARY = "#C76033";
+const ACTIVE_COLOR = "#ce6d44"; // highlight color
+const TEXT_COLOR_DEFAULT = "white"; // default text color
 
 function Chip({
   checked,
@@ -14,28 +15,32 @@ function Chip({
       type="button"
       onClick={onClick}
       className={clsx(
-        "inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold",
-        checked ? "text-white" : "",
+        "inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition duration-200",
+        checked
+          ? "bg-white text-[#ce6d44]"
+          : "bg-transparent text-white hover:bg-white/10"
       )}
       style={{
-        background: checked ? PRIMARY : "transparent",
-        border: `1.5px solid ${PRIMARY}`,
-        color: checked ? "white" : PRIMARY,
+        border: checked ? "none" : "none", // no border around text area
       }}
     >
       <span
-        className="grid h-4 w-4 place-items-center rounded-[3px]"
-        style={{
-          border: `1.5px solid ${checked ? "white" : PRIMARY}`,
-          background: checked ? "white" : "transparent",
-        }}
+        className={clsx(
+          "grid h-4 w-4 place-items-center rounded-[3px] transition duration-200",
+          checked
+            ? "bg-[#ce6d44]"
+            : "border border-white bg-transparent hover:bg-white/20"
+        )}
       >
-        {checked ? <span className="block h-2 w-2 rounded-[2px]" style={{ background: PRIMARY }} /> : null}
+        {checked ? (
+          <span className="block h-2 w-2 rounded-[2px] bg-white" />
+        ) : null}
       </span>
       {children}
     </button>
   );
 }
+
 
 function PhoneInput({
   value,
@@ -47,7 +52,10 @@ function PhoneInput({
       className="flex items-center rounded-xl bg-white px-3 py-2"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
     >
-      <span className="mr-2 select-none rounded-lg px-2 py-1 text-sm font-semibold" style={{ color: PRIMARY }}>
+      <span
+        className="mr-2 select-none rounded-lg px-2 py-1 text-sm font-semibold"
+        style={{ color: ACTIVE_COLOR }}
+      >
         +91
       </span>
       <input
@@ -75,15 +83,26 @@ export default function StepIntro() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="mb-3 text-xl font-semibold text-white">What you want to ?</p>
+        <p className="mb-3 text-xl font-semibold text-white">
+          What you want to ?
+        </p>
         <div className="flex flex-wrap gap-4">
-          <Chip checked={data.purpose === "sell"} onClick={() => setData((d) => ({ ...d, purpose: "sell" }))}>
+          <Chip
+            checked={data.purpose === "sell"}
+            onClick={() => setData((d) => ({ ...d, purpose: "sell" }))}
+          >
             Sell
           </Chip>
-          <Chip checked={data.purpose === "rent"} onClick={() => setData((d) => ({ ...d, purpose: "rent" }))}>
+          <Chip
+            checked={data.purpose === "rent"}
+            onClick={() => setData((d) => ({ ...d, purpose: "rent" }))}
+          >
             Lease/Rent
           </Chip>
-          <Chip checked={data.purpose === "pg"} onClick={() => setData((d) => ({ ...d, purpose: "pg" }))}>
+          <Chip
+            checked={data.purpose === "pg"}
+            onClick={() => setData((d) => ({ ...d, purpose: "pg" }))}
+          >
             PG/Hostel
           </Chip>
         </div>
@@ -92,11 +111,36 @@ export default function StepIntro() {
       <div>
         <p className="mb-3 text-xl font-semibold text-white">Property type</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <Chip checked={data.propertyTypes.includes("flat")} onClick={() => t("flat")}>Flat</Chip>
-          <Chip checked={data.propertyTypes.includes("land")} onClick={() => t("land")}>land</Chip>
-          <Chip checked={data.propertyTypes.includes("plot")} onClick={() => t("plot")}>plot</Chip>
-          <Chip checked={data.propertyTypes.includes("commercial")} onClick={() => t("commercial")}>Commercial</Chip>
-          <Chip checked={data.propertyTypes.includes("pg_hostel")} onClick={() => t("pg_hostel")}>PG/hostel</Chip>
+          <Chip
+            checked={data.propertyTypes.includes("flat")}
+            onClick={() => t("flat")}
+          >
+            Flat
+          </Chip>
+          <Chip
+            checked={data.propertyTypes.includes("land")}
+            onClick={() => t("land")}
+          >
+            land
+          </Chip>
+          <Chip
+            checked={data.propertyTypes.includes("plot")}
+            onClick={() => t("plot")}
+          >
+            plot
+          </Chip>
+          <Chip
+            checked={data.propertyTypes.includes("commercial")}
+            onClick={() => t("commercial")}
+          >
+            Commercial
+          </Chip>
+          <Chip
+            checked={data.propertyTypes.includes("pg_hostel")}
+            onClick={() => t("pg_hostel")}
+          >
+            PG/hostel
+          </Chip>
         </div>
       </div>
 
@@ -104,7 +148,10 @@ export default function StepIntro() {
         <p className="mb-3 text-xl font-semibold text-white">
           Please share your contact number&nbsp; to reach you
         </p>
-        <PhoneInput value={data.phone} onChange={(v) => setData((d) => ({ ...d, phone: v }))} />
+        <PhoneInput
+          value={data.phone}
+          onChange={(v) => setData((d) => ({ ...d, phone: v }))}
+        />
       </div>
     </div>
   );
