@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
-type Step = "chooser" | "signup" | "login" | "intent";
+type Step = "chooser" | "login" | "intent" | "identity" | "verify"; // 🔧 CHANGED: include "login", remove "signup"
 type Mode = "otp" | "password";
 
 export default function AuthModal({
@@ -15,6 +15,12 @@ export default function AuthModal({
 }) {
   const [step, setStep] = useState<Step>("chooser");
   const [mode, setMode] = useState<Mode>("otp");
+  const [intent, setIntent] = useState<"buy" | "sell" | null>(null);
+  const [contactMethod, setContactMethod] = useState("email");
+  const [contactValue, setContactValue] = useState(""); 
+
+  // identity entry (email/phone)
+  const [identityValue, setIdentityValue] = useState("");
 
   // OTP state (4 boxes)
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -23,11 +29,11 @@ export default function AuthModal({
 
   useEffect(() => {
     if (open) {
-      // reset when opening
       setStep("chooser");
       setMode("otp");
       setOtp(["", "", "", ""]);
       setAccepted(false);
+      setIdentityValue("");
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = "";
@@ -53,8 +59,6 @@ export default function AuthModal({
     const next = [...otp];
     next[idx] = val;
     setOtp(next);
-
-    // move focus
     if (val && idx < 3) inputsRef.current[idx + 1]?.focus();
     if (!val && idx > 0) inputsRef.current[idx - 1]?.focus();
   };
@@ -83,7 +87,9 @@ export default function AuthModal({
         {/* Headline */}
         {step !== "chooser" && (
           <>
-            <h2 className="text-2xl font-semibold leading-tight">Sign up</h2>
+            <h2 className="text-2xl font-semibold leading-tight">
+              {step === "verify" ? "Verify your account" : "Sign up"}
+            </h2>
             <p className="mt-1 text-sm font-medium text-[#C76033]/80">
               Get started with Property Dastak
             </p>
@@ -97,7 +103,7 @@ export default function AuthModal({
 
             <div className="space-y-3">
               <button
-                onClick={() => { setStep("signup"); setMode("otp"); }}
+                onClick={() => { setStep("intent"); }}  // 🔧 CHANGED: go to intent, not signup
                 className="w-full rounded-xl bg-[#C76033] px-5 py-3 text-white font-medium"
               >
                 Sign Up
@@ -112,8 +118,156 @@ export default function AuthModal({
           </div>
         )}
 
-        {/* Step: signup */}
-        {step === "signup" && (
+        {/* Step: login */}
+        {step === "login" && (
+          <div className="pt-4">
+            <label className="mb-2 block text-base font-semibold">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="mb-4 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+            />
+            <label className="mb-2 block text-base font-semibold">Password</label>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              className="mb-5 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+            />
+            <button className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white">
+              Login
+            </button>
+          </div>
+        )}
+
+        {/* Step: intent (Buy / Sell) */}
+{step === "intent" && (
+  <div className="pt-4">
+    <div className="mt-2 space-y-4">
+      <p className="text-lg font-medium">What are you here for?</p>
+      <div className="flex gap-3">
+        <button
+          onClick={() => setIntent("buy")}
+          className={clsx(
+            "flex-1 rounded-full px-4 py-2 font-semibold",
+            intent === "buy"
+              ? "bg-[#C76033] text-white"
+              : "bg-[#C76033]/20 text-[#C76033]"
+          )}
+        >
+          Buy a property
+        </button>
+        <button
+          onClick={() => setIntent("sell")}
+          className={clsx(
+            "flex-1 rounded-full px-4 py-2 font-semibold",
+            intent === "sell"
+              ? "bg-[#C76033] text-white"
+              : "bg-[#C76033]/20 text-[#C76033]"
+          )}
+        >
+          Sell a Property
+        </button>
+      </div>
+      <button
+        onClick={() => setStep("identity")}
+        disabled={!intent} // disable until user selects
+        className={clsx(
+          "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
+          intent
+            ? "bg-[#C76033] text-white"
+            : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
+        )}
+      >
+        Next
+      </button>
+    </div>
+  </div>
+)}
+
+        {/* Step: identity (Email or Phone) */}
+        {step === "identity" && (
+        <div className="pt-4">
+          <div className="mt-2 space-y-4">
+            <p className="text-lg font-medium">Choose how you want to continue</p>
+
+            {/* Toggle buttons for Email / Phone */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setContactMethod("email");
+                  setContactValue(""); // clear input on switch
+                }}
+                className={clsx(
+                  "flex-1 rounded-full px-4 py-2 font-semibold",
+                  contactMethod === "email"
+                    ? "bg-[#C76033] text-white"
+                    : "bg-[#C76033]/20 text-[#C76033]"
+                )}
+              >
+                Email
+              </button>
+              <button
+                onClick={() => {
+                  setContactMethod("phone");
+                  setContactValue(""); // clear input on switch
+                }}
+                className={clsx(
+                  "flex-1 rounded-full px-4 py-2 font-semibold",
+                  contactMethod === "phone"
+                    ? "bg-[#C76033] text-white"
+                    : "bg-[#C76033]/20 text-[#C76033]"
+                )}
+              >
+                Phone
+              </button>
+            </div>
+
+            {/* Input field stays always */}
+            <input
+              type={contactMethod === "email" ? "email" : "tel"}
+              placeholder={
+                contactMethod === "email" ? "Enter your email" : "Enter your phone"
+              }
+              className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+              value={contactValue}
+              onChange={(e) => {
+                let val = e.target.value;
+
+                if (contactMethod === "phone") {
+                  // Only allow numbers, limit to 10 digits
+                  val = val.replace(/[^0-9]/g, "").slice(0, 10);
+                }
+
+                setContactValue(val);
+              }}
+            />
+
+            <button
+              onClick={() => setStep("verify")}
+              disabled={
+                !contactValue ||
+                (contactMethod === "phone" && contactValue.length !== 10) || // phone must be 10 digits
+                (contactMethod === "email" &&
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue)) // email must be valid
+              }
+              className={clsx(
+                "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
+                contactValue &&
+                ((contactMethod === "phone" && contactValue.length === 10) ||
+                  (contactMethod === "email" &&
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue)))
+                  ? "bg-[#C76033] text-white"
+                  : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
+              )}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+        )}
+
+        {/* Step: verify (OTP / Password) */}
+        {step === "verify" && (
           <div className="pt-4">
             {/* Tabs */}
             <div className="mb-5 flex gap-4">
@@ -143,12 +297,11 @@ export default function AuthModal({
 
             {mode === "otp" ? (
               <>
-                {/* OTP inputs */}
                 <div className="mb-6 flex gap-4">
                   {otp.map((d, i) => (
                     <input
                       key={i}
-                      ref={(el) => {inputsRef.current[i] = el}}
+                      ref={(el) => { inputsRef.current[i] = el; }}
                       inputMode="numeric"
                       maxLength={1}
                       value={d}
@@ -158,7 +311,6 @@ export default function AuthModal({
                   ))}
                 </div>
 
-                {/* Terms */}
                 <label className="mb-4 flex cursor-pointer items-center gap-2 text-sm text-black">
                   <input
                     type="checkbox"
@@ -176,7 +328,7 @@ export default function AuthModal({
 
                 <button
                   disabled={!canSendOtp}
-                  onClick={() => setStep("intent")}
+                  onClick={() => onOpenChange(false)}
                   className={clsx(
                     "mt-3 w-full rounded-2xl px-5 py-3 text-base font-semibold",
                     canSendOtp
@@ -184,22 +336,20 @@ export default function AuthModal({
                       : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
                   )}
                 >
-                  Send OTP
+                  Verify & Continue
                 </button>
               </>
             ) : (
               <>
-                <label className="mb-2 block text-base font-semibold">Enter Password</label>
+                <label className="mb-2 block text-base font-semibold">Create Password</label>
                 <div className="mb-4">
-                  <div className="relative">
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">@</span>
-                    <input
-                      type="password"
-                      placeholder="Enter Password"
-                      className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-8 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
-                    />
-                  </div>
+                  <input
+                    type="password"
+                    placeholder="Enter Password"
+                    className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+                  />
                 </div>
+
                 <label className="mb-4 flex cursor-pointer items-center gap-2 text-sm">
                   <input
                     type="checkbox"
@@ -214,9 +364,10 @@ export default function AuthModal({
                     </a>
                   </span>
                 </label>
+
                 <button
                   disabled={!accepted}
-                  onClick={() => setStep("intent")}
+                  onClick={() => onOpenChange(false)}
                   className={clsx(
                     "mt-3 w-full rounded-2xl px-5 py-3 text-base font-semibold",
                     accepted
@@ -224,59 +375,10 @@ export default function AuthModal({
                       : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
                   )}
                 >
-                  Send OTP
+                  Create Account
                 </button>
               </>
             )}
-          </div>
-        )}
-
-        {/* Step: login (simple example) */}
-        {step === "login" && (
-          <div className="pt-4">
-            <label className="mb-2 block text-base font-semibold">Email</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="mb-4 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
-            />
-            <label className="mb-2 block text-base font-semibold">Password</label>
-            <input
-              type="password"
-              placeholder="Enter Password"
-              className="mb-5 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
-            />
-            <button className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white">
-              Login
-            </button>
-          </div>
-        )}
-
-        {/* Step: intent (Buy / Sell) */}
-        {step === "intent" && (
-          <div className="pt-4">
-            <h2 className="text-2xl font-semibold leading-tight">Sign up</h2>
-            <p className="mt-1 text-sm font-medium text-[#C76033]/80">
-              Get started with Property Dastak
-            </p>
-
-            <div className="mt-6 space-y-4">
-              <p className="text-lg font-medium">What are you here for ?</p>
-              <div className="flex gap-3">
-                <button className="flex-1 rounded-full bg-[#C76033] px-4 py-2 font-semibold text-white">
-                  Buy a property
-                </button>
-                <button className="flex-1 rounded-full bg-[#C76033]/20 px-4 py-2 font-semibold text-[#C76033]">
-                  Sell a Property
-                </button>
-              </div>
-              <button
-                onClick={() => onOpenChange(false)}
-                className="mt-2 w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white"
-              >
-                Next
-              </button>
-            </div>
           </div>
         )}
       </div>
