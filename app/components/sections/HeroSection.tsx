@@ -81,7 +81,7 @@ const HeroSection = () => {
           </div>
 
           {/* Right Content - House Image */}
-          <div className="w-[800px] h-[800px] overflow-hidden rounded-t-[50%] rounded-b-none">
+          <div className="relative w-full max-w-[700px] aspect-square overflow-hidden rounded-t-[50%] rounded-b-none mx-auto lg:mx-0">
             <img 
               src="/assets/Villa.jpg" 
               alt="Curved Top Image" 

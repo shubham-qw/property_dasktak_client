@@ -16,3 +16,11 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+body {
+  background-image: url("/assets/Villa.jpg"); /* replace with your image path */
+  background-size: contain;  /* makes image cover the entire screen */
+  background-position: center; /* keeps it centered */
+  background-repeat: no-repeat; /* prevents tiling */
+  background-attachment: fixed; /* optional: keeps it fixed when scrolling */
+}
