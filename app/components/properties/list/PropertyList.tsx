@@ -1,8 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import PropertyFilters, { FilterState } from "./PropertyFilters";
 import PropertyCard from "./PropertyCard";
+import axois from 'axios';
+
+type PropertyCardValue  = {
+    id: number;
+    title: string;
+    priceLabel: string;
+    price: number;          // in INR
+    sizeSqft: number;
+    floor: string;
+    city: string;
+    locality: string;
+    propertyType: "flat" | "land" | "plot" | "commercial" | "pg_hostel";
+    availability?: "women" | "men" | "co_living";
+    furnishing: "furnished" | "unfurnished";
+    amenities: string[];
+    image: string;
+}
 
 const SAMPLE: Array<{
     id: number;
@@ -81,20 +98,65 @@ export default function PropertyList() {
         amenities: [],
     });
 
-    const data = useMemo(() => {
-        return SAMPLE.filter((p) => {
-            if (filters.q && !p.title.toLowerCase().includes(filters.q.toLowerCase())) return false;
-            if (filters.city && p.city !== filters.city) return false;
-            if (p.price < filters.budgetMin || p.price > filters.budgetMax) return false;
-            if (filters.availability.length && !filters.availability.includes(p.availability ?? "")) return false;
-            if (filters.types.length && !filters.types.includes(p.propertyType)) return false;
-            if (filters.localities.length && !filters.localities.includes(p.locality)) return false;
-            if (filters.furnishing && p.furnishing !== filters.furnishing) return false;
-            if (p.sizeSqft < filters.areaMin || p.sizeSqft > filters.areaMax) return false;
-            if (filters.amenities.length && !filters.amenities.every(a => p.amenities.includes(a))) return false;
-            return true;
-        });
-    }, [filters]);
+    const [data, setData] = useState<PropertyCardValue[]>([]);
+
+    // const data = useMemo(() => {
+    //     return SAMPLE.filter((p) => {
+    //         if (filters.q && !p.title.toLowerCase().includes(filters.q.toLowerCase())) return false;
+    //         if (filters.city && p.city !== filters.city) return false;
+    //         if (p.price < filters.budgetMin || p.price > filters.budgetMax) return false;
+    //         if (filters.availability.length && !filters.availability.includes(p.availability ?? "")) return false;
+    //         if (filters.types.length && !filters.types.includes(p.propertyType)) return false;
+    //         if (filters.localities.length && !filters.localities.includes(p.locality)) return false;
+    //         if (filters.furnishing && p.furnishing !== filters.furnishing) return false;
+    //         if (p.sizeSqft < filters.areaMin || p.sizeSqft > filters.areaMax) return false;
+    //         if (filters.amenities.length && !filters.amenities.every(a => p.amenities.includes(a))) return false;
+    //         return true;
+    //     });
+    // }, [filters]);
+
+    const loadProperties = async () => {
+
+        const access_token = localStorage.getItem('access_token');
+
+
+        const config = {
+            method: "get",
+            url: "http://localhost:8080/properties", // 👈 change to your backend URL if needed
+            headers: {
+                "authorization": `Bearer ${access_token}`,
+                "Content-Type": "application/json",
+            }
+        };
+
+        const response = await axois(config);
+
+        if (response.status == 200) {
+
+            const newData : PropertyCardValue[] = response.data.map((p: any) => ({
+                id: p.id,
+                title: p.title,
+                price: parseFloat(p.price_per_sqft),                // numeric price
+                availability: p.availability_status,                // e.g. "ready_to_move"
+                propertyType: p.property_type,                      // e.g. "flat", "apartment"
+                city: p.city,
+                locality: p.locality,
+                furnishing: p.ownership === "freehold" ? "furnished" : "unfurnished",
+                sizeSqft: p.property_details?.rooms * 500 || 0,     // example: derive sqft (adjust logic!)
+                amenities: p.property_amenities || [],
+                image : '/house-illustration.png'
+            }));
+
+            console.log(newData);
+
+            setData(newData);
+
+        }
+    }
+
+    useEffect(() => {
+        loadProperties()
+    },[])
 
     return (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 items-start">

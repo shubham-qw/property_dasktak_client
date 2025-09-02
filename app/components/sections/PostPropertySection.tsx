@@ -12,7 +12,7 @@ const PostPropertySection = () => {
           You can post your property here for free
         </p>
         <button className="bg-[#ce6d44] text-white hover:[#a35136] px-8 py-4 rounded-lg text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform duration-300">
-          <Link href="/properties/post">
+          <Link href="/properties/post?step=0">
             Post Property
           </Link>
         </button>

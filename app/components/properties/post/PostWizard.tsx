@@ -10,6 +10,7 @@ import StepMedia from "./steps/StepMedia";
 import StepPrice from "./steps/StepPrice";
 import StepAmenities from "./steps/StepAmenities";
 import StepIntro from "./steps/StepIntro";
+import axios from 'axios';
 
 type Props = { initialStep: number };
 
@@ -88,6 +89,61 @@ function WizardBody({ initialStep }: Props) {
   const onNext = () => setStep(step + 1);
   const onPrev = () => setStep(step - 1);
   const onSubmit = async () => {
+
+    try {
+
+      const payload = {
+        title: data.apartment || "Untitled Property",   // add title field in form
+        property_for: data.purpose,                 // "sell" | "rent" | "pg"
+        property_type: data.propertyTypes[0] || "", // taking first (adjust if multi-select)
+        city: data.city,
+        locality: data.locality,
+        sub_locality: data.subLocality || "",
+        apartment: data.apartment || "",
+        availability_status: data.availability || "ready_to_move",
+        property_age: parseInt(data.propertyAge) || 0,        // add to FormData if not there yet
+        ownership: data.ownership || "",
+        price_per_sqft: (parseFloat(data.pricePerSqft || "") || 0).toString(),
+        brokerage_charge: (parseFloat(data.brokerage || "") || 0).toString(),
+        description: data.description || "",
+        property_features: data.features || [],
+        property_amenities: data.amenities || [],
+        property_details: {
+          rooms: Number(data.rooms || 0),
+          bathrooms: Number(data.bathrooms || 0),
+          balconies: Number(data.balconies || 0),
+          other_rooms: data.otherRooms || "",
+          floors: Number(data.floor || 0),
+        },
+        property_size: {
+          number: data.area,
+          metric: data.areaUnit
+        },
+        parking: {
+          parking_count: Number(data.reservedParking || 0),
+          parking_type: data.parkingType || "",
+        },
+      };
+
+      const access_token = localStorage.getItem('access_token');
+
+      const config = {
+        method: "post",
+        url: "http://localhost:8080/properties", // 👈 change to your backend URL if needed
+        headers: {
+          "authorization": `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        data: payload,
+      };
+
+      const res = await axios(config);
+      console.log("✅ Property posted:", res.data);
+      return res.data;
+    } catch (err: any) {
+      console.error("❌ handleSubmit error:", err.response?.data || err.message);
+      throw err;
+    }
     // TODO: post to your API
     alert("Submit -> wire to API");
   };

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-
+import axios from 'axios';
 type Step = "chooser" | "login" | "intent" | "identity" | "verify"; // 🔧 CHANGED: include "login", remove "signup"
 type Mode = "otp" | "password";
 
@@ -26,6 +26,50 @@ export default function AuthModal({
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [accepted, setAccepted] = useState(false);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([null, null, null, null]);
+
+  const [loginValue, setLoginValue] = useState({loginEmail : "", loginPassword : ""})
+
+  const handleLoginChange = (e : ChangeEvent<HTMLInputElement>) => {
+
+    setLoginValue({...loginValue, [e.target.name] : e.target.value});
+  }
+
+  const handleLoginSubmit = async (e : ChangeEvent<HTMLInputElement>) => {
+
+    e.preventDefault();
+
+      const config = {
+        url : `http://localhost:8080/users/login`,
+        method : 'POST',
+        data : {
+          email : loginValue.loginEmail,
+          password : loginValue.loginPassword
+        },
+        headers : {
+          'Conten-Type' : 'application/json'
+        }
+      };
+
+      const response = await axios(config);
+
+      if (response.status == 200) {
+          const data = response.data;
+          const {access_token} = data;
+          const {first_name, last_name, email} = data.user;
+
+          const fullName = first_name + ' ' + last_name;
+
+          localStorage.setItem('access_token', access_token);
+          localStorage.setItem('email', email);
+          localStorage.setItem('full_name', fullName);
+
+          window.location.reload();
+      } else {
+        console.log(response.status, response.data);
+        alert('Wrong user or password');
+      }
+    
+  }
 
   useEffect(() => {
     if (open) {
@@ -120,23 +164,31 @@ export default function AuthModal({
 
         {/* Step: login */}
         {step === "login" && (
-          <div className="pt-4">
+          <form onSubmit={handleLoginSubmit} className="pt-4">
             <label className="mb-2 block text-base font-semibold">Email</label>
             <input
+              value={loginValue.loginEmail}
+              onChange={handleLoginChange}
               type="email"
               placeholder="you@example.com"
+              name="loginEmail"
               className="mb-4 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
             />
             <label className="mb-2 block text-base font-semibold">Password</label>
             <input
+              value={loginValue.loginPassword}
+              onChange={handleLoginChange}
               type="password"
+              name="loginPassword"
               placeholder="Enter Password"
               className="mb-5 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
             />
-            <button className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white">
+            <button 
+            type="submit"
+            className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white">
               Login
             </button>
-          </div>
+          </form>
         )}
 
         {/* Step: intent (Buy / Sell) */}

@@ -13,10 +13,11 @@ export type FormData = {
     area: string; areaUnit: "sqft" | "sqyd" | "sqm";
     rooms?: string; bathrooms?: string; balconies?: string; otherRooms?: string;
     reservedParking?: string; parkingType?: "covered" | "open";
-    floor?: string; availability?: "immediate" | "30days" | "60days" | "under_construction";
+    floor?: string; availability?: "ready_to_move" | "30days" | "60days" | "under_construction";
     video?: File | null; images: File[];
     ownership?: string; price?: string; pricePerSqft?: string; brokerage?: string;
     amenities: string[]; features: string[]; description?: string;
+    propertyAge : string;
 };
 
 export const initialForm: FormData = {
@@ -28,8 +29,9 @@ export const initialForm: FormData = {
     rooms: "", bathrooms: "", balconies: "", otherRooms: "",
     reservedParking: "", parkingType: undefined, floor: "", availability: undefined,
     video: null, images: [],
-    ownership: "", price: "", pricePerSqft: "", brokerage: "",
+    ownership: undefined, price: "", pricePerSqft: "", brokerage: "",
     amenities: [], features: [], description: "",
+    propertyAge : "0"
 };
 
 type Ctx = {

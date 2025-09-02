@@ -6,6 +6,19 @@ import AuthModal from '../ui/AuthModal';
 const Header = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  const checkForLogin = () => {
+    const fullName = localStorage.getItem('full_name');
+    const access_token = localStorage.getItem('access_token');
+
+    if (fullName && access_token) {
+      return {
+        fullName,access_token
+      }
+    } else {
+      return null;
+    }
+  }
+
   return (
     <>
     <header className="bg-[#272727] shadow-sm border-b border-[#272727]">
@@ -36,9 +49,10 @@ const Header = () => {
 
           {/* Login Button */}
           <div className="flex items-center space-x-4">
-            <button onClick={() => setIsAuthModalOpen(true)} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+           { checkForLogin() ? 
+           <span  className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors ">{checkForLogin()?.fullName}</span> : <button onClick={() => setIsAuthModalOpen(true)} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
               Login/Sign in
-            </button>
+            </button>}
             
             {/* Mobile Menu Button */}
             <button className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">

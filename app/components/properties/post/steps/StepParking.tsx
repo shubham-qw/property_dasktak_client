@@ -70,9 +70,7 @@ export default function StepParking() {
       <Field label="Availability status">
         <div className="grid grid-cols-2 gap-3">
           {[
-            ["immediate", "Immediate"],
-            ["30days", "Within 30 days"],
-            ["60days", "Within 60 days"],
+            ["ready_to_move", "Ready to move"],
             ["under_construction", "Under construction"],
           ].map(([value, label]) => (
             <button
@@ -88,6 +86,13 @@ export default function StepParking() {
             </button>
           ))}
         </div>
+      </Field>
+      <Field label="Property Age">
+        <Input
+          value={data.propertyAge || ""}
+          onChange={(v: string) => setData((d) => ({ ...d, propertyAge: v }))}
+          placeholder="Enter no."
+        />
       </Field>
     </>
   );
