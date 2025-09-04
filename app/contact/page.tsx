@@ -22,23 +22,23 @@ export default function ContactPage() {
         <ContactInfo
           title="Address"
           items={[
-            "Headquarters: IIMT incubation center, Greater Noida",
-            "Registered Office: East Delhi",
+            "Headquarters: Dehradun",
+            "Registered Office: East Dehradun",
           ]}
         />
         <ContactInfo
           title="Contact Info"
           items={[
-            "Phone: +91 8920642742",
-            "Email: sagarvikas901@gmail.com",
+            "Phone: +91 8178293156",
+            "Email: PropertyDastak@gmail.com",
           ]}
         />
         <ContactInfo
           title="Social Media"
           items={[
-            "Website: www.hobolivings.com",
-            "Facebook: www.facebook.com/my",
-            "Blog: www.blog.mycompany.com",
+            "Instagram: www.instagram.com/propertydastak/",
+            "Facebook: www.facebook.com/propertydastak",
+            "Linkedin: www.linkedin.com/in/property-dastak/",
           ]}
         />
       </div>

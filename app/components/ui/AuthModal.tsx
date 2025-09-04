@@ -3,7 +3,8 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import axios from 'axios';
-type Step = "chooser" | "login" | "intent" | "identity" | "verify"; // 🔧 CHANGED: include "login", remove "signup"
+type Step = "chooser" | "login" | "intent" | "profile" | "identity" | "verify";
+
 type Mode = "otp" | "password";
 
 export default function AuthModal({
@@ -17,7 +18,10 @@ export default function AuthModal({
   const [mode, setMode] = useState<Mode>("otp");
   const [intent, setIntent] = useState<"buy" | "sell" | null>(null);
   const [contactMethod, setContactMethod] = useState("email");
-  const [contactValue, setContactValue] = useState(""); 
+  const [contactValue, setContactValue] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+ 
 
   // identity entry (email/phone)
   const [identityValue, setIdentityValue] = useState("");
@@ -112,7 +116,6 @@ export default function AuthModal({
       className="fixed inset-0 z-[100] flex items-center justify-center"
       aria-modal="true"
       role="dialog"
-      onClick={() => onOpenChange(false)}
     >
       <div className="absolute inset-0 bg-black/50" />
       <div
@@ -162,6 +165,45 @@ export default function AuthModal({
           </div>
         )}
 
+        {/* Step: profile (First & Last Name) */}
+        {step === "profile" && (
+          <div className="pt-4">
+            <div className="mt-2 space-y-4">
+              <p className="text-lg font-medium">Tell us about you</p>
+
+              <input
+                type="text"
+                placeholder="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+              />
+
+              <input
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
+              />
+
+              <button
+                onClick={() => setStep("identity")}
+                disabled={!firstName || !lastName}
+                className={clsx(
+                  "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
+                  firstName && lastName
+                    ? "bg-[#C76033] text-white"
+                    : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
+                )}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+
+
         {/* Step: login */}
         {step === "login" && (
           <form onSubmit={handleLoginSubmit} className="pt-4">
@@ -192,49 +234,49 @@ export default function AuthModal({
         )}
 
         {/* Step: intent (Buy / Sell) */}
-{step === "intent" && (
-  <div className="pt-4">
-    <div className="mt-2 space-y-4">
-      <p className="text-lg font-medium">What are you here for?</p>
-      <div className="flex gap-3">
-        <button
-          onClick={() => setIntent("buy")}
-          className={clsx(
-            "flex-1 rounded-full px-4 py-2 font-semibold",
-            intent === "buy"
-              ? "bg-[#C76033] text-white"
-              : "bg-[#C76033]/20 text-[#C76033]"
-          )}
-        >
-          Buy a property
-        </button>
-        <button
-          onClick={() => setIntent("sell")}
-          className={clsx(
-            "flex-1 rounded-full px-4 py-2 font-semibold",
-            intent === "sell"
-              ? "bg-[#C76033] text-white"
-              : "bg-[#C76033]/20 text-[#C76033]"
-          )}
-        >
-          Sell a Property
-        </button>
-      </div>
-      <button
-        onClick={() => setStep("identity")}
-        disabled={!intent} // disable until user selects
-        className={clsx(
-          "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
-          intent
-            ? "bg-[#C76033] text-white"
-            : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
+        {step === "intent" && (
+          <div className="pt-4">
+            <div className="mt-2 space-y-4">
+              <p className="text-lg font-medium">What are you here for?</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIntent("buy")}
+                  className={clsx(
+                    "flex-1 rounded-full px-4 py-2 font-semibold",
+                    intent === "buy"
+                      ? "bg-[#C76033] text-white"
+                      : "bg-[#C76033]/20 text-[#C76033]"
+                  )}
+                >
+                  Buy a property
+                </button>
+                <button
+                  onClick={() => setIntent("sell")}
+                  className={clsx(
+                    "flex-1 rounded-full px-4 py-2 font-semibold",
+                    intent === "sell"
+                      ? "bg-[#C76033] text-white"
+                      : "bg-[#C76033]/20 text-[#C76033]"
+                  )}
+                >
+                  Sell a Property
+                </button>
+              </div>
+              <button
+                onClick={() => setStep("profile")}
+                disabled={!intent} // disable until user selects
+                className={clsx(
+                  "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
+                  intent
+                    ? "bg-[#C76033] text-white"
+                    : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
+                )}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
-      >
-        Next
-      </button>
-    </div>
-  </div>
-)}
 
         {/* Step: identity (Email or Phone) */}
         {step === "identity" && (
