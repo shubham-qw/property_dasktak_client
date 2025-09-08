@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { Phone } from "lucide-react";
 
-export default function MoverAndPackersForm() {
-  const [moveType, setMoveType] = useState("local");
+export default function HomeLoanForm() {
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
   const [phone, setPhone] = useState("");
@@ -19,7 +18,6 @@ export default function MoverAndPackersForm() {
     }
 
     const formData = {
-      moveType,
       city,
       pincode,
       phone,
@@ -28,7 +26,7 @@ export default function MoverAndPackersForm() {
     console.log("Form submitted:", formData);
 
     // Example: send data to API
-    // await fetch("/api/movers", {
+    // await fetch("/api/home-loan", {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },
     //   body: JSON.stringify(formData),
@@ -39,28 +37,6 @@ export default function MoverAndPackersForm() {
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      {/* Move type radio */}
-      <div>
-        <label className="flex items-center space-x-2 mb-2">
-          <input
-            type="radio"
-            value="local"
-            checked={moveType === "local"}
-            onChange={() => setMoveType("local")}
-          />
-          <span>Local Moving</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="radio"
-            value="intercity"
-            checked={moveType === "intercity"}
-            onChange={() => setMoveType("intercity")}
-          />
-          <span>Inter-city Moving</span>
-        </label>
-      </div>
-
       {/* City */}
       <div>
         <label className="block text-white font-semibold mb-2">City</label>
