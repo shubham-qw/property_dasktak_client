@@ -2,6 +2,7 @@
 
 import React , {useState} from 'react';
 import AuthModal from '../ui/AuthModal';
+import { logout } from '@/app/lib/api/logout';
 
 const Header = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -47,12 +48,23 @@ const Header = () => {
             </a>
           </nav>
 
-          {/* Login Button */}
+          {/* Login/Logout */}
           <div className="flex items-center space-x-4">
-           { checkForLogin() ? 
-           <span  className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors ">{checkForLogin()?.fullName}</span> : <button onClick={() => setIsAuthModalOpen(true)} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
-              Login/Sign in
-            </button>}
+           { checkForLogin() ? (
+             <div className="flex items-center gap-3">
+               <span className="text-white px-3 py-2 text-[15px] font-medium">{checkForLogin()?.fullName}</span>
+               <button
+                 onClick={() => { logout(); window.location.reload(); }}
+                 className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+               >
+                 Logout
+               </button>
+             </div>
+           ) : (
+             <button onClick={() => setIsAuthModalOpen(true)} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
+               Login/Sign in
+             </button>
+           )}
             
             {/* Mobile Menu Button */}
             <button className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import backendHttpClient from "@/app/lib/httpClient/backendHttpClient";
 import { Phone } from "lucide-react";
 
 export default function MoverAndPackersForm() {
@@ -10,7 +11,7 @@ export default function MoverAndPackersForm() {
   const [phone, setPhone] = useState("");
   const [accepted, setAccepted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!accepted) {
@@ -25,16 +26,18 @@ export default function MoverAndPackersForm() {
       phone,
     };
 
-    console.log("Form submitted:", formData);
-
-    // Example: send data to API
-    // await fetch("/api/movers", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formData),
-    // });
-
-    alert("Form submitted successfully!");
+    try {
+      await backendHttpClient.post("/leads/movers-packers", formData);
+      alert("Form submitted successfully!");
+      setCity("");
+      setPincode("");
+      setPhone("");
+      setAccepted(false);
+      setMoveType("local");
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "Failed to submit. Please try again.";
+      alert(message);
+    }
   };
 
   return (

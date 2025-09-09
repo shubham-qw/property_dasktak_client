@@ -1,4 +1,4 @@
-import MoverAndPackersForm from "@/app/components/contact/InteriorDesignersForm";
+import InteriorDesignersForm from "@/app/components/contact/InteriorDesignersForm";
 
 export default function HomeLoanPage() {
   return (
@@ -25,7 +25,7 @@ export default function HomeLoanPage() {
           {/* Right side: Form */}
           <div className="bg-[#CE6D44] text-white rounded-2xl shadow-lg p-8">
             <h2 className="text-3xl font-semibold mb-6">We’ll provide you best Home loan services</h2>
-            <MoverAndPackersForm />
+            <InteriorDesignersForm submitPath="/leads/home-loan" />
           </div>
         </div>
       </div>

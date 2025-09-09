@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import axios from 'axios';
 type Property = {
   id: string;
   title: string;
@@ -15,8 +15,9 @@ type Property = {
   images: string[]; // 👈 array of images from backend
 };
 
-export default function PropertyHero({ property }: { property: Property }) {
+export default function PropertyHero({ property : Troperty }: { property: Property }) {
   const [current, setCurrent] = useState(0);
+  const [property, setProperty] = useState(Troperty);
 
   const prev = () => {
     setCurrent((c) => (c === 0 ? property.images.length - 1 : c - 1));
@@ -25,6 +26,47 @@ export default function PropertyHero({ property }: { property: Property }) {
   const next = () => {
     setCurrent((c) => (c === property.images.length - 1 ? 0 : c + 1));
   };
+
+  const loadProperties = async () => {
+    console.log(property.id);
+
+    const access_token = localStorage.getItem('access_token');
+
+
+        const config = {
+            method: "get",
+            url: `http://localhost:8080/properties/${property.id}`, // 👈 change to your backend URL if needed
+            headers: {
+                "authorization": `Bearer ${access_token}`,
+                "Content-Type": "application/json",
+            }
+        };
+
+        const response = await axios(config);
+
+        console.log(response.data);
+
+        if (response.data) {
+          const data = response.data;
+          const newProperty  : Property= {
+          id : property.id,
+          price :  property.price,
+          size : property.size,
+          title : data.apartment,
+          amenities : data.property_amenities,
+          status : data.availability_status,
+          location : data.locality + ", " + data.sub_locality,
+          images : property.images,
+          furnishing : property.furnishing,
+          floor : property.floor
+          }
+          setProperty(newProperty);
+        }
+  }
+
+  useEffect(() => {
+    loadProperties()
+  },[])
 
   return (
     <section className="relative w-full">

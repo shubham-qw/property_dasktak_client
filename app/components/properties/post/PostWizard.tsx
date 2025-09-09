@@ -138,8 +138,21 @@ function WizardBody({ initialStep }: Props) {
       };
 
       const res = await axios(config);
-      console.log("✅ Property posted:", res.data);
-      return res.data;
+      const created = res.data;
+
+      // Upload media if any
+      if ((data.images?.length || 0) > 0 || data.video) {
+        const form = new FormData();
+        (data.images || []).forEach((img: File) => form.append('images', img));
+        if (data.video) form.append('video', data.video);
+
+        await axios.post(`http://localhost:8080/properties/${created.id}/media`, form, {
+          headers: { 'authorization': `Bearer ${access_token}` }
+        });
+      }
+
+      console.log("✅ Property posted:", created);
+      return created;
     } catch (err: any) {
       console.error("❌ handleSubmit error:", err.response?.data || err.message);
       throw err;

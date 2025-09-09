@@ -1,5 +1,6 @@
 import PropertyHero from "app/components/detail/PropertyHero";
-
+import PropertyDetailTracker from "app/components/detail/PropertyDetailTracker";
+import axios from 'axios';
 type Props = {
   params: { id: string };
 };
@@ -27,6 +28,7 @@ export default function PropertyDetailPage({ params }: Props) {
 
   return (
     <div className="w-full">
+      <PropertyDetailTracker propertyId={id} />
       <PropertyHero property={property} />
     </div>
   );

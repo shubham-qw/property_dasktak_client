@@ -5,4 +5,6 @@ const backendHttpClient = axios.create({
     timeout: 10000
 });
 
+console.log('env',process.env.BACKEND_URL)
+
 export default backendHttpClient;

@@ -176,6 +176,7 @@ export default function PropertyList() {
                         furnishing={p.furnishing === "furnished" ? "Fully furnished" : "Non furnished"}
                         amenities={p.amenities}
                         image={p.image}
+                        uuid={p.id}
                     />
                 ))}
                 {!data.length && (
