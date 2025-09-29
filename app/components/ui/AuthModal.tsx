@@ -2,9 +2,9 @@
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import axios from 'axios';
-type Step = "chooser" | "login" | "intent" | "profile" | "identity" | "verify";
+import axios from "axios";
 
+type Step = "chooser" | "login" | "intent" | "profile" | "identity" | "verify";
 type Mode = "otp" | "password";
 
 export default function AuthModal({
@@ -17,71 +17,112 @@ export default function AuthModal({
   const [step, setStep] = useState<Step>("chooser");
   const [mode, setMode] = useState<Mode>("otp");
   const [intent, setIntent] = useState<"buy" | "sell" | null>(null);
-  const [contactMethod, setContactMethod] = useState("email");
-  const [contactValue, setContactValue] = useState("");
+  const [userClass, setUserClass] = useState<"buyer" | "seller" | "">("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
- 
 
-  // identity entry (email/phone)
-  const [identityValue, setIdentityValue] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPhone, setSignUpPhone] = useState("");
+  const [password, setPassword] = useState("");
 
-  // OTP state (4 boxes)
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [accepted, setAccepted] = useState(false);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([null, null, null, null]);
 
-  const [loginValue, setLoginValue] = useState({loginEmail : "", loginPassword : ""})
+  // login states
+  const [loginValue, setLoginValue] = useState({ loginEmail: "", loginPassword: "" });
 
-  const handleLoginChange = (e : ChangeEvent<HTMLInputElement>) => {
+  // ✅ login handlers (unchanged)
+  const handleLoginChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLoginValue({ ...loginValue, [e.target.name]: e.target.value });
+  };
 
-    setLoginValue({...loginValue, [e.target.name] : e.target.value});
-  }
-
-  const handleLoginSubmit = async (e : ChangeEvent<HTMLInputElement>) => {
-
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const config = {
+      url: `http://localhost:8080/users/login`,
+      method: "POST",
+      data: {
+        email: loginValue.loginEmail,
+        password: loginValue.loginPassword,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios(config);
+
+    if (response.status === 200) {
+      const data = response.data;
+      const { access_token } = data;
+      const { first_name, last_name, email } = data.user;
+
+      const fullName = first_name + " " + last_name;
+
+      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("email", email);
+      localStorage.setItem("full_name", fullName);
+
+      window.location.reload();
+    } else {
+      console.log(response.status, response.data);
+      alert("Wrong user or password");
+    }
+  };
+
+  // ✅ signup handler (new)
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
       const config = {
-        url : `http://localhost:8080/users/login`,
-        method : 'POST',
-        data : {
-          email : loginValue.loginEmail,
-          password : loginValue.loginPassword
+        url: `http://localhost:8080/users/signup`,
+        method: "POST",
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          phone_number : signUpPhone,
+          email: signUpEmail,
+          class: userClass,
+          password,
         },
-        headers : {
-          'Conten-Type' : 'application/json'
-        }
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
+
+      console.log(config);
 
       const response = await axios(config);
 
-      if (response.status == 200) {
-          const data = response.data;
-          const {access_token} = data;
-          const {first_name, last_name, email} = data.user;
+      console.log(response);
 
-          const fullName = first_name + ' ' + last_name;
-
-          localStorage.setItem('access_token', access_token);
-          localStorage.setItem('email', email);
-          localStorage.setItem('full_name', fullName);
-
-          window.location.reload();
-      } else {
-        console.log(response.status, response.data);
-        alert('Wrong user or password');
+      if (response.status === 200) {
+        alert("Sign up successful!");
+        onOpenChange(false);
       }
-    
-  }
+    } catch (err: any) {
+      console.error(err);
+      alert("Sign up failed");
+    }
+  };
 
+  // reset modal on open
   useEffect(() => {
     if (open) {
       setStep("chooser");
       setMode("otp");
       setOtp(["", "", "", ""]);
       setAccepted(false);
-      setIdentityValue("");
+      setFirstName("");
+      setLastName("");
+      setSignUpEmail("");
+      setSignUpPhone("");
+      setPassword("");
+      setUserClass("");
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = "";
@@ -150,7 +191,9 @@ export default function AuthModal({
 
             <div className="space-y-3">
               <button
-                onClick={() => { setStep("intent"); }}  // 🔧 CHANGED: go to intent, not signup
+                onClick={() => {
+                  setStep("intent");
+                }}
                 className="w-full rounded-xl bg-[#C76033] px-5 py-3 text-white font-medium"
               >
                 Sign Up
@@ -203,8 +246,7 @@ export default function AuthModal({
           </div>
         )}
 
-
-        {/* Step: login */}
+        {/* Step: login (UNCHANGED) */}
         {step === "login" && (
           <form onSubmit={handleLoginSubmit} className="pt-4">
             <label className="mb-2 block text-base font-semibold">Email</label>
@@ -225,22 +267,26 @@ export default function AuthModal({
               placeholder="Enter Password"
               className="mb-5 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
             />
-            <button 
-            type="submit"
-            className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white">
+            <button
+              type="submit"
+              className="w-full rounded-2xl bg-[#C76033] px-5 py-3 font-semibold text-white"
+            >
               Login
             </button>
           </form>
         )}
 
-        {/* Step: intent (Buy / Sell) */}
+        {/* Step: intent */}
         {step === "intent" && (
           <div className="pt-4">
             <div className="mt-2 space-y-4">
               <p className="text-lg font-medium">What are you here for?</p>
               <div className="flex gap-3">
                 <button
-                  onClick={() => setIntent("buy")}
+                  onClick={() => {
+                    setIntent("buy");
+                    setUserClass("buyer");
+                  }}
                   className={clsx(
                     "flex-1 rounded-full px-4 py-2 font-semibold",
                     intent === "buy"
@@ -251,7 +297,10 @@ export default function AuthModal({
                   Buy a property
                 </button>
                 <button
-                  onClick={() => setIntent("sell")}
+                  onClick={() => {
+                    setIntent("sell");
+                    setUserClass("seller");
+                  }}
                   className={clsx(
                     "flex-1 rounded-full px-4 py-2 font-semibold",
                     intent === "sell"
@@ -264,7 +313,7 @@ export default function AuthModal({
               </div>
               <button
                 onClick={() => setStep("profile")}
-                disabled={!intent} // disable until user selects
+                disabled={!intent}
                 className={clsx(
                   "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
                   intent
@@ -278,202 +327,90 @@ export default function AuthModal({
           </div>
         )}
 
-        {/* Step: identity (Email or Phone) */}
+        {/* Step: identity (Email + Phone) */}
         {step === "identity" && (
-        <div className="pt-4">
-          <div className="mt-2 space-y-4">
-            <p className="text-lg font-medium">Choose how you want to continue</p>
+          <div className="pt-4">
+            <div className="mt-2 space-y-4">
+              <p className="text-lg font-medium">Provide your contact details</p>
 
-            {/* Toggle buttons for Email / Phone */}
-            <div className="flex gap-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3"
+                value={signUpEmail}
+                onChange={(e) => setSignUpEmail(e.target.value)}
+              />
+
+              <input
+                type="tel"
+                placeholder="Enter your phone"
+                className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3"
+                value={signUpPhone}
+                onChange={(e) =>
+                  setSignUpPhone(e.target.value.replace(/[^0-9]/g, "").slice(0, 10))
+                }
+              />
+
               <button
-                onClick={() => {
-                  setContactMethod("email");
-                  setContactValue(""); // clear input on switch
-                }}
+                onClick={() => setStep("verify")}
+                disabled={
+                  !signUpEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ||
+                  signUpPhone.length !== 10
+                }
                 className={clsx(
-                  "flex-1 rounded-full px-4 py-2 font-semibold",
-                  contactMethod === "email"
+                  "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
+                  signUpEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) &&
+                    signUpPhone.length === 10
                     ? "bg-[#C76033] text-white"
-                    : "bg-[#C76033]/20 text-[#C76033]"
+                    : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
                 )}
               >
-                Email
-              </button>
-              <button
-                onClick={() => {
-                  setContactMethod("phone");
-                  setContactValue(""); // clear input on switch
-                }}
-                className={clsx(
-                  "flex-1 rounded-full px-4 py-2 font-semibold",
-                  contactMethod === "phone"
-                    ? "bg-[#C76033] text-white"
-                    : "bg-[#C76033]/20 text-[#C76033]"
-                )}
-              >
-                Phone
+                Continue
               </button>
             </div>
+          </div>
+        )}
 
-            {/* Input field stays always */}
+        {/* Step: verify (with password) */}
+        {step === "verify" && (
+          <form onSubmit={handleSignUpSubmit} className="pt-4">
+            <label className="mb-2 block text-base font-semibold">Create Password</label>
             <input
-              type={contactMethod === "email" ? "email" : "tel"}
-              placeholder={
-                contactMethod === "email" ? "Enter your email" : "Enter your phone"
-              }
-              className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
-              value={contactValue}
-              onChange={(e) => {
-                let val = e.target.value;
-
-                if (contactMethod === "phone") {
-                  // Only allow numbers, limit to 10 digits
-                  val = val.replace(/[^0-9]/g, "").slice(0, 10);
-                }
-
-                setContactValue(val);
-              }}
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mb-4 w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3"
             />
 
+            <label className="mb-4 flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-black/30 accent-[#C76033]"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+              />
+              <span>
+                I accept all the terms and condition{" "}
+                <a href="/terms" className="font-semibold text-[#C76033] underline">
+                  View T&amp;C
+                </a>
+              </span>
+            </label>
+
             <button
-              onClick={() => setStep("verify")}
-              disabled={
-                !contactValue ||
-                (contactMethod === "phone" && contactValue.length !== 10) || // phone must be 10 digits
-                (contactMethod === "email" &&
-                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue)) // email must be valid
-              }
+              type="submit"
+              disabled={!accepted || !password}
               className={clsx(
-                "mt-2 w-full rounded-2xl px-5 py-3 font-semibold",
-                contactValue &&
-                ((contactMethod === "phone" && contactValue.length === 10) ||
-                  (contactMethod === "email" &&
-                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue)))
+                "mt-3 w-full rounded-2xl px-5 py-3 text-base font-semibold",
+                accepted && password
                   ? "bg-[#C76033] text-white"
                   : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
               )}
             >
-              Continue
+              Create Account
             </button>
-          </div>
-        </div>
-        )}
-
-        {/* Step: verify (OTP / Password) */}
-        {step === "verify" && (
-          <div className="pt-4">
-            {/* Tabs */}
-            <div className="mb-5 flex gap-4">
-              <button
-                onClick={() => setMode("otp")}
-                className={clsx(
-                  "rounded-full px-5 py-2 text-sm font-semibold",
-                  mode === "otp"
-                    ? "bg-[#C76033] text-white"
-                    : "bg-[#C76033]/15 text-[#C76033]"
-                )}
-              >
-                OTP
-              </button>
-              <button
-                onClick={() => setMode("password")}
-                className={clsx(
-                  "rounded-full px-5 py-2 text-sm font-semibold",
-                  mode === "password"
-                    ? "bg-[#C76033] text-white"
-                    : "bg-[#C76033]/15 text-[#C76033]"
-                )}
-              >
-                Password
-              </button>
-            </div>
-
-            {mode === "otp" ? (
-              <>
-                <div className="mb-6 flex gap-4">
-                  {otp.map((d, i) => (
-                    <input
-                      key={i}
-                      ref={(el) => { inputsRef.current[i] = el; }}
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={d}
-                      onChange={(e) => handleOtpChange(i, e.target.value)}
-                      className="h-12 w-12 rounded-lg border border-black/20 text-center text-xl outline-none focus:ring-2 focus:ring-[#C76033]"
-                    />
-                  ))}
-                </div>
-
-                <label className="mb-4 flex cursor-pointer items-center gap-2 text-sm text-black">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-black/30 accent-[#C76033]"
-                    checked={accepted}
-                    onChange={(e) => setAccepted(e.target.checked)}
-                  />
-                  <span>
-                    I accept all the terms and condition{" "}
-                    <a href="/terms" className="font-semibold text-[#C76033] underline">
-                      View T&amp;C
-                    </a>
-                  </span>
-                </label>
-
-                <button
-                  disabled={!canSendOtp}
-                  onClick={() => onOpenChange(false)}
-                  className={clsx(
-                    "mt-3 w-full rounded-2xl px-5 py-3 text-base font-semibold",
-                    canSendOtp
-                      ? "bg-[#C76033] text-white"
-                      : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
-                  )}
-                >
-                  Verify & Continue
-                </button>
-              </>
-            ) : (
-              <>
-                <label className="mb-2 block text-base font-semibold">Create Password</label>
-                <div className="mb-4">
-                  <input
-                    type="password"
-                    placeholder="Enter Password"
-                    className="w-full rounded-xl border border-black/20 bg-[#C76033]/10 px-4 py-3 outline-none focus:ring-2 focus:ring-[#C76033]"
-                  />
-                </div>
-
-                <label className="mb-4 flex cursor-pointer items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-black/30 accent-[#C76033]"
-                    checked={accepted}
-                    onChange={(e) => setAccepted(e.target.checked)}
-                  />
-                  <span>
-                    I accept all the terms and condition{" "}
-                    <a href="/terms" className="font-semibold text-[#C76033] underline">
-                      View T&amp;C
-                    </a>
-                  </span>
-                </label>
-
-                <button
-                  disabled={!accepted}
-                  onClick={() => onOpenChange(false)}
-                  className={clsx(
-                    "mt-3 w-full rounded-2xl px-5 py-3 text-base font-semibold",
-                    accepted
-                      ? "bg-[#C76033] text-white"
-                      : "bg-[#C76033]/20 text-black/60 cursor-not-allowed"
-                  )}
-                >
-                  Create Account
-                </button>
-              </>
-            )}
-          </div>
+          </form>
         )}
       </div>
     </div>

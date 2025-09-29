@@ -92,6 +92,8 @@ function WizardBody({ initialStep }: Props) {
 
     try {
 
+      console.log(data);
+
       const payload = {
         title: data.apartment || "Untitled Property",   // add title field in form
         property_for: data.purpose,                 // "sell" | "rent" | "pg"

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const ServicesSection = () => {
   const services = [
@@ -7,28 +8,32 @@ const ServicesSection = () => {
       title: 'Movers and Packers',
       icon: '📦',
       description: 'Professional moving services for your property',
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-blue-500 to-blue-600',
+      url: '/mover-and-packers'
     },
     {
       id: 2,
       title: 'Interior Design',
       icon: '🏠',
       description: 'Transform your space with expert design',
-      color: 'from-purple-500 to-purple-600'
+      color: 'from-purple-500 to-purple-600',
+      url: '/Interior-Designers'
     },
     {
       id: 3,
       title: 'Home Loan',
       icon: '💰',
       description: 'Easy financing solutions for your dream home',
-      color: 'from-green-500 to-green-600'
+      color: 'from-green-500 to-green-600',
+      url: '/Home-Loan'
     },
     {
       id: 4,
       title: 'Vastu',
       icon: '✨',
       description: 'Harmonious living with Vastu principles',
-      color: 'from-orange-500 to-orange-600'
+      color: 'from-orange-500 to-orange-600',
+      url: '/Vastu'
     }
   ];
 
@@ -48,6 +53,7 @@ const ServicesSection = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service) => (
+            <Link href={service.url}>
             <div
               key={service.id}
               className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
@@ -62,6 +68,7 @@ const ServicesSection = () => {
                 {service.description}
               </p>
             </div>
+            </Link>
           ))}
         </div>
       </div>
