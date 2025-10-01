@@ -19,10 +19,9 @@ export default function PropertyDetailPage({ params }: Props) {
     status: "Ready to move",
     furnishing: "Fully furnished",
     amenities: ["Gym", "Wi-Fi", "Kitchen"],
-    images: [
-      "/assets/property-1.png",
-      "/assets/property-2.png",
-      "/assets/property-3.png",
+    media: [
+      { "type": "image", "src": "/assets/property-1.png" },
+      { "type": "video", "src": "/assets/sample-video.mp4", "poster": "/assets/property-2.png" }
     ], // 👈 API will supply this
   };
 
