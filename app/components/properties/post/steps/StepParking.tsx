@@ -24,13 +24,17 @@ function Chip({ active, onClick, children }: any) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-xl bg-white px-4 py-2 font-semibold"
-      style={{ outline: active ? "2px solid #00000022" : "none" }}
+      className={`rounded-xl px-4 py-2 font-semibold transition-all duration-200 ${
+        active
+          ? "bg-[#C76033] text-white shadow-md" // highlighted style
+          : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" // normal style
+      }`}
     >
       {children}
     </button>
   );
 }
+
 
 export default function StepParking() {
   const { data, setData } = useWizard();

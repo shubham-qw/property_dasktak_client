@@ -34,12 +34,12 @@ const Header = () => {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex space-x-8">
-            <a 
+            {/* <a 
               href="/insights" 
               className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors "
             >
               Insights
-            </a>
+            </a> */}
             <a 
               href="/owners" 
               className="text-white hover:text-gray-400 px-3 py-2 text-[15px] font-medium transition-colors "

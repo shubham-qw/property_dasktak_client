@@ -14,7 +14,6 @@ export default function Home() {
       <ServicesSection />
       <ProjectsSection />
       <PostPropertySection />
-      <CitiesSection />
       <BudgetSection />
       <PGHostelSection />
       <TestimonialsSection />

@@ -9,15 +9,20 @@ export type FormData = {
     purpose?: "sell" | "rent" | "pg";
     propertyTypes: Array<"flat" | "land" | "plot" | "commercial" | "pg_hostel">;
     phone: string;
+
     city: string; locality: string; subLocality?: string; apartment?: string;
     area: string; areaUnit: "sqft" | "sqyd" | "sqm";
+
     rooms?: string; bathrooms?: string; balconies?: string; otherRooms?: string;
+
     reservedParking?: string; parkingType?: "covered" | "open";
-    floor?: string; availability?: "ready_to_move" | "30days" | "60days" | "under_construction";
+    floor?: string; availability?: "ready_to_move" | "30days" | "60days" | "under_construction"; propertyAge : string;
+
     video?: File | null; images: File[];
     ownership?: string; price?: string; pricePerSqft?: string; brokerage?: string;
+    
     amenities: string[]; features: string[]; description?: string;
-    propertyAge : string;
+    
 };
 
 export const initialForm: FormData = {

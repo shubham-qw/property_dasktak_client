@@ -79,12 +79,37 @@ function WizardBody({ initialStep }: Props) {
         const typeOk = data.propertyTypes.length > 0;
         return phoneOk && purposeOk && typeOk;
       }
-      case 4: // media
-        return !data.video || data.video.size <= 80 * 1024 * 1024;
-      case 5: // price
+      case 1: {
+        const cityOk = !!data.city?.trim();
+        const localityOk = !!data.locality?.trim();
+        const areaOk = !!data.area?.trim();
+        return cityOk && localityOk && areaOk;
+      }
+      case 2: {
+        const roomsOk = !!data.rooms?.trim();
+        const bathroomsOk = !!data.bathrooms?.trim();
+        const balconiesOk = !!data.balconies?.trim();
+        return roomsOk && bathroomsOk && balconiesOk;
+      }
+      case 3: {
+        const reservedParkingOk = !!data.reservedParking?.trim();
+        const availabilityOk = !!data.availability?.trim();
+        const floorOk = !!data.floor?.trim();
+        return reservedParkingOk && availabilityOk && floorOk;
+      }
+      case 4: {// media
+        const videoOk = !!data.video;
+        const imagesOk = !!data.images;
+        return (!data.video || data.video.size <= 80 * 1024 * 1024) && videoOk && imagesOk;
+      }
+      case 5: {// price
         return !!data.price;
-      default:
-        return true;
+      }
+      case 6: {
+        const amenitiesOk = data.amenities.length;
+        const featuresOk = data.features.length;
+        return amenitiesOk && featuresOk;
+      }
     }
   }, [step, data]);
 
@@ -215,7 +240,8 @@ function WizardBody({ initialStep }: Props) {
         ) : (
           <button
             onClick={onSubmit}
-            className="ml-auto w-full rounded-2xl bg-white px-5 py-3 text-lg font-semibold"
+            disabled={!nextEnabled}
+            className="ml-auto w-full rounded-2xl bg-white px-5 py-3 text-lg font-semibold disabled:cursor-not-allowed disabled:opacity-70"
           >
             Let’s Go
           </button>

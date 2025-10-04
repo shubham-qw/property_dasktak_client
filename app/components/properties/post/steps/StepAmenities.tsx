@@ -44,7 +44,7 @@ function PillInput({
           }}
           className="rounded-xl bg-white px-4 py-2 font-semibold"
         >
-          Add more +
+          Add
         </button>
       </div>
       {values.length > 0 && (
