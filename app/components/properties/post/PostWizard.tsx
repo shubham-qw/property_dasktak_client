@@ -11,6 +11,8 @@ import StepPrice from "./steps/StepPrice";
 import StepAmenities from "./steps/StepAmenities";
 import StepIntro from "./steps/StepIntro";
 import axios from 'axios';
+import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 type Props = { initialStep: number };
 
@@ -92,8 +94,6 @@ function WizardBody({ initialStep }: Props) {
 
     try {
 
-      console.log(data);
-
       const payload = {
         title: data.apartment || "Untitled Property",   // add title field in form
         property_for: data.purpose,                 // "sell" | "rent" | "pg"
@@ -156,14 +156,34 @@ function WizardBody({ initialStep }: Props) {
       console.log("✅ Property posted:", created);
       return created;
     } catch (err: any) {
+
+      if (err.name == 'AxiosError') {
+        const errResponse = err.response;
+        const errData = errResponse.data;
+        const errMessage = errData.message;
+        if (err.status == 400) {
+          let showMessage = '';
+
+          if (Array.isArray(errMessage)) {
+            showMessage = errMessage.join(',');
+          } else {
+            showMessage = errMessage;
+          }
+
+          toast.warning(showMessage);
+        }
+      }
       console.error("❌ handleSubmit error:", err.response?.data || err.message);
-      throw err;
+
+      //throw err;
     }
     // TODO: post to your API
-    alert("Submit -> wire to API");
+   // alert("Submit -> wire to API");
   };
 
   return (
+    <>
+     <ToastContainer />
     <PostCard>
       {step === 0 && <StepIntro />}
       {step === 1 && <StepLocation />}
@@ -202,5 +222,6 @@ function WizardBody({ initialStep }: Props) {
         )}
       </div>
     </PostCard>
+    </>
   );
 }
