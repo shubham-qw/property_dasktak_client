@@ -50,14 +50,26 @@ export default function PropertyHero({ property: initial }: { property: Property
 
       if (response.data) {
         const data = response.data;
+
+        const media : any = [];
+
+        const {videos,images} = data;
+
+        if (videos && Array.isArray(videos)) {
+          videos.forEach(videoPath => media.push({ "type": "video", "src": `http://localhost:8080/media?fileName=${videoPath}&mediaType=video`, "poster": "/assets/property-2.png" }))          
+        } 
+
+        if (images && Array.isArray(images)) {
+          images.forEach(imagePath => media.push({ "type": "image", "src": `http://localhost:8080/media?fileName=${imagePath}&mediaType=image` }))          
+        }
+
         const newProperty: Property = {
           ...property,
           title: data.apartment,
           amenities: data.property_amenities,
           status: data.availability_status,
           location: data.locality + ", " + data.sub_locality,
-          media: [{ "type": "image", "src": "/assets/property-1.png" },
-          { "type": "video", "src": "/assets/sample-video.mp4", "poster": "/assets/property-2.png" },], // 👈 backend can also return media array in future
+          media // 👈 backend can also return media array in future
         };
         setProperty(newProperty);
       }

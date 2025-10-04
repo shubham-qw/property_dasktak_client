@@ -133,7 +133,20 @@ export default function PropertyList() {
 
         if (response.status == 200) {
 
-            const newData : PropertyCardValue[] = response.data.map((p: any) => ({
+            console.log('sdadsa',response.data);
+
+            const newData : PropertyCardValue[] = response.data.map((p: any) => { 
+
+                const images = p.images;
+
+                let imageUrl = '/house-illustration.png';
+
+                if (Array.isArray(images) && images.length > 0) {
+                    const imagePath = images.shift();
+                    imageUrl = `http://localhost:8080/media?fileName=${imagePath}&mediaType=image`; 
+                }
+
+                return {
                 id: p.id,
                 title: p.title,
                 price: parseFloat(p.price_per_sqft),                // numeric price
@@ -144,10 +157,8 @@ export default function PropertyList() {
                 furnishing: p.ownership === "freehold" ? "furnished" : "unfurnished",
                 sizeSqft: p.property_details?.rooms * 500 || 0,     // example: derive sqft (adjust logic!)
                 amenities: p.property_amenities || [],
-                image : '/house-illustration.png'
-            }));
-
-            console.log(newData);
+                image : imageUrl
+            }});
 
             setData(newData);
 
