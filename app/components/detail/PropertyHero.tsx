@@ -17,7 +17,7 @@ type Property = {
   status: string;
   furnishing: string;
   amenities: string[];
-  media: MediaItem[]; // 👈 instead of just images
+  media: any; // 👈 instead of just images
 };
 
 export default function PropertyHero({ property: initial }: { property: Property }) {

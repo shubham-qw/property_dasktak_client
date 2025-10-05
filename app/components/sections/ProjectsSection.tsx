@@ -1,24 +1,63 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import axios from 'axios';
 
 const ProjectsSection = () => {
-  const projects = [
-    {
-      id: 1,
-      name: 'Amar Apartments',
-      price: 'Rs. 2.25 to Rs. 3 Crore',
-      image: '🏢',
-      location: 'Delhi NCR',
-      description: 'Modern living with premium amenities'
-    },
-    {
-      id: 2,
-      name: 'Amar Apartments',
-      price: 'Rs. 2.25 to Rs. 3 Crore',
-      image: '🏢',
-      location: 'Delhi NCR',
-      description: 'Luxury apartments with city views'
-    }
-  ];
+
+  const [projects, setProjects] = useState([]);
+
+  // const projects = [
+  //   {
+  //     id: 1,
+  //     name: 'Amar Apartments',
+  //     price: 'Rs. 2.25 to Rs. 3 Crore',
+  //     image: '🏢',
+  //     location: 'Delhi NCR',
+  //     description: 'Modern living with premium amenities'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Amar Apartments',
+  //     price: 'Rs. 2.25 to Rs. 3 Crore',
+  //     image: '🏢',
+  //     location: 'Delhi NCR',
+  //     description: 'Luxury apartments with city views'
+  //   }
+  // ];
+
+  const loadHighDemandProperties = async () => {
+      const access_token = localStorage.getItem('access_token');
+
+
+        const config = {
+            method: "get",
+            url: "http://localhost:8080/properties/most-clicked?limit=2", // 👈 change to your backend URL if needed
+            headers: {
+                "authorization": `Bearer ${access_token}`,
+                "Content-Type": "application/json",
+            }
+        };
+
+        const response = await axios(config);
+
+        if (response.status == 200) {
+          const data = response.data;
+
+          setProjects(data.map((val:any) => {return {
+            id : val.id,
+            name : val.name,
+            price : val.price,
+            description : val.description,
+            image : `http://localhost:8080/media?fileName=${val.image}&mediaType=image` 
+          }}))
+        }
+  }
+
+
+  useEffect(() => {
+    loadHighDemandProperties();
+  },[])
 
   return (
     <section className="py-16 bg-white">
@@ -29,20 +68,20 @@ const ProjectsSection = () => {
             High demand projects in Delhi
           </h2>
           <button className="bg-[#ce6d44] hover:bg-[#a35136] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors">
-            Know more
+            <Link href='/properties'>Know more</Link>
           </button>
         </div>
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {projects.map((project) => (
+          {projects.map((project : any) => (
             <div
               key={project.id}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
             >
               {/* Project Image */}
               <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <div className="text-6xl">{project.image}</div>
+                <img src={project.image} className="w-full h-full object-cover"></img>
               </div>
               
               {/* Project Info */}
