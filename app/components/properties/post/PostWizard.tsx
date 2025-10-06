@@ -157,7 +157,7 @@ function WizardBody({ initialStep }: Props) {
 
       const config = {
         method: "post",
-        url: "http://localhost:8080/properties", // 👈 change to your backend URL if needed
+        url: `${process.env.BACKEND_URL}/properties`, // 👈 change to your backend URL if needed
         headers: {
           "authorization": `Bearer ${access_token}`,
           "Content-Type": "application/json",
@@ -174,7 +174,7 @@ function WizardBody({ initialStep }: Props) {
         (data.images || []).forEach((img: File) => form.append('images', img));
         if (data.video) form.append('video', data.video);
 
-        await axios.post(`http://localhost:8080/properties/${created.id}/media`, form, {
+        await axios.post(`${process.env.BACKEND_URL}/properties/${created.id}/media`, form, {
           headers: { 'authorization': `Bearer ${access_token}` }
         });
       }

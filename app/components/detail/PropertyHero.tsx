@@ -40,7 +40,7 @@ export default function PropertyHero({ property: initial }: { property: Property
     try {
       const config = {
         method: "get",
-        url: `http://localhost:8080/properties/${property.id}`,
+        url: `${process.env.BACKEND_URL}/properties/${property.id}`,
         headers: {
           authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
@@ -57,11 +57,11 @@ export default function PropertyHero({ property: initial }: { property: Property
         const {videos,images} = data;
 
         if (videos && Array.isArray(videos)) {
-          videos.forEach(videoPath => media.push({ "type": "video", "src": `http://localhost:8080/media?fileName=${videoPath}&mediaType=video`, "poster": "/assets/property-2.png" }))          
+          videos.forEach(videoPath => media.push({ "type": "video", "src": `${process.env.BACKEND_URL}/media?fileName=${videoPath}&mediaType=video`, "poster": "/assets/property-2.png" }))          
         } 
 
         if (images && Array.isArray(images)) {
-          images.forEach(imagePath => media.push({ "type": "image", "src": `http://localhost:8080/media?fileName=${imagePath}&mediaType=image` }))          
+          images.forEach(imagePath => media.push({ "type": "image", "src": `${process.env.BACKEND_URL}/media?fileName=${imagePath}&mediaType=image` }))          
         }
 
         const newProperty: Property = {
@@ -73,6 +73,7 @@ export default function PropertyHero({ property: initial }: { property: Property
           media, // 👈 backend can also return media array in future,
           price: data.price
         };
+
         setProperty(newProperty);
       }
     } catch (err) {

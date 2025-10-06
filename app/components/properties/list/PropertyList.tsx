@@ -122,7 +122,7 @@ export default function PropertyList() {
 
         const config = {
             method: "get",
-            url: "http://localhost:8080/properties", // 👈 change to your backend URL if needed
+            url: `${process.env.BACKEND_URL}/properties`, // 👈 change to your backend URL if needed
             headers: {
                 "authorization": `Bearer ${access_token}`,
                 "Content-Type": "application/json",
@@ -143,7 +143,7 @@ export default function PropertyList() {
 
                 if (Array.isArray(images) && images.length > 0) {
                     const imagePath = images.shift();
-                    imageUrl = `http://localhost:8080/media?fileName=${imagePath}&mediaType=image`; 
+                    imageUrl = `${process.env.BACKEND_URL}/media?fileName=${imagePath}&mediaType=image`; 
                 }
 
                 return {

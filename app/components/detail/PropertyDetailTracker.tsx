@@ -13,7 +13,7 @@ export default function PropertyDetailTracker({
   const email = typeof window !== 'undefined' ? localStorage.getItem('email') : null;
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:4000");
+    const ws = new WebSocket(process.env.WEBSOCKET_URL || '');
 
     ws.onopen = () => {
       console.log("✅ WS connected");

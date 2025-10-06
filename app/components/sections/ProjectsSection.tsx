@@ -32,7 +32,7 @@ const ProjectsSection = () => {
 
         const config = {
             method: "get",
-            url: "http://localhost:8080/properties/most-clicked?limit=2", // 👈 change to your backend URL if needed
+            url: `${process.env.BACKEND_URL}/properties/most-clicked?limit=2`, // 👈 change to your backend URL if needed
             headers: {
                 "authorization": `Bearer ${access_token}`,
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const ProjectsSection = () => {
             name : val.name,
             price : val.price,
             description : val.description,
-            image : `http://localhost:8080/media?fileName=${val.image}&mediaType=image` 
+            image : `${process.env.BACKEND_URL}/media?fileName=${val.image}&mediaType=image` 
           }}))
         }
   }

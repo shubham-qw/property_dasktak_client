@@ -43,7 +43,7 @@ export default function AuthModal({
     e.preventDefault();
 
     const config = {
-      url: `http://localhost:8080/users/login`,
+      url: `${process.env.BACKEND_URL}/users/login`,
       method: "POST",
       data: {
         email: loginValue.loginEmail,
@@ -89,7 +89,7 @@ export default function AuthModal({
 
     try {
       const config = {
-        url: `http://localhost:8080/users/signup`,
+        url: `${process.env.BACKEND_URL}/users/signup`,
         method: "POST",
         data: {
           first_name: firstName,
