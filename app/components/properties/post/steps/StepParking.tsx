@@ -9,7 +9,20 @@ function Field({ label, children }: any) {
     </div>
   );
 }
-function Input({ value, onChange, placeholder }: any) {
+function Input({ value, onChange, placeholder, type = null }: any) {
+
+  if (type) {
+    return (
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-xl bg-white px-4 py-3 outline-none"
+        type={type}
+      />
+    );
+  }
+
   return (
     <input
       value={value}
@@ -46,6 +59,7 @@ export default function StepParking() {
           value={data.reservedParking || ""}
           onChange={(v: string) => setData((d) => ({ ...d, reservedParking: v }))}
           placeholder="Enter no."
+          type="number"
         />
         <div className="mt-3 flex gap-3">
           <Chip
@@ -68,6 +82,7 @@ export default function StepParking() {
           value={data.floor || ""}
           onChange={(v: string) => setData((d) => ({ ...d, floor: v }))}
           placeholder="Enter no."
+          type="number"
         />
       </Field>
 
@@ -96,6 +111,7 @@ export default function StepParking() {
           value={data.propertyAge || ""}
           onChange={(v: string) => setData((d) => ({ ...d, propertyAge: v }))}
           placeholder="Enter no."
+          type="number"
         />
       </Field>
     </>

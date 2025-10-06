@@ -1,5 +1,5 @@
 "use client";
-
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 const HeroSection = () => {
@@ -67,7 +67,9 @@ const HeroSection = () => {
                     type="button"
                     className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-md shadow-md transition-colors"
                   >
+                    <Link href="/properties">
                     Search
+                    </Link>
                   </button>
                 </div>
               </div>

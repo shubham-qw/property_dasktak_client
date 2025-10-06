@@ -9,7 +9,18 @@ function Field({ label, children }: any) {
     </div>
   );
 }
-function Input({ value, onChange, placeholder }: any) {
+function Input({ value, onChange, placeholder, type = null }: any) {
+  if (type) {
+    return (
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-xl bg-white px-4 py-3 outline-none"
+        type={type}
+      />
+    );
+  }
   return (
     <input
       value={value}
@@ -25,13 +36,13 @@ export default function StepRooms() {
   return (
     <>
       <Field label="Add rooms">
-        <Input value={data.rooms || ""} onChange={(v: string) => setData(d => ({...d, rooms: v}))} placeholder="Enter Room no." />
+        <Input type="number" value={data.rooms || ""} onChange={(v: string) => setData(d => ({...d, rooms: v}))} placeholder="Enter Room no." />
       </Field>
       <Field label="Add bathrooms">
-        <Input value={data.bathrooms || ""} onChange={(v: string) => setData(d => ({...d, bathrooms: v}))} placeholder="Enter Bathrooms no." />
+        <Input type="number" value={data.bathrooms || ""} onChange={(v: string) => setData(d => ({...d, bathrooms: v}))} placeholder="Enter Bathrooms no." />
       </Field>
       <Field label="Add balconies">
-        <Input value={data.balconies || ""} onChange={(v: string) => setData(d => ({...d, balconies: v}))} placeholder="Enter Balcony no." />
+        <Input type="number" value={data.balconies || ""} onChange={(v: string) => setData(d => ({...d, balconies: v}))} placeholder="Enter Balcony no." />
       </Field>
       <Field label="Other rooms">
         <Input value={data.otherRooms || ""} onChange={(v: string) => setData(d => ({...d, otherRooms: v}))} placeholder="Enter Pooja room, Store room & etc." />

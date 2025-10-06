@@ -2,11 +2,11 @@ import PropertyHero from "app/components/detail/PropertyHero";
 import PropertyDetailTracker from "app/components/detail/PropertyDetailTracker";
 import axios from 'axios';
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function PropertyDetailPage({ params }: Props) {
-  const { id } = params;
+export default async function PropertyDetailPage({ params }: Props) {
+  const { id } = await params;
 
   // 🔹 Sample property with multiple images (API will return these)
   const property = {

@@ -116,7 +116,7 @@ export default function PropertyList() {
     // }, [filters]);
 
     const loadProperties = async () => {
-
+        if (typeof window === 'undefined') return;
         const access_token = localStorage.getItem('access_token');
 
 

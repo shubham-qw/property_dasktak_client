@@ -1,7 +1,16 @@
+"use client";
 import React from 'react';
 import Link from 'next/link';
 
 const PostPropertySection = () => {
+  if (typeof window === 'undefined') {
+    return null; // Don't render on server side
+  }
+  
+  const userClass = localStorage.getItem("class");
+  if (userClass === "buyer") {
+    return null;
+  }
   return (
     <section className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

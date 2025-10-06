@@ -34,6 +34,7 @@ export default function PropertyHero({ property: initial }: { property: Property
   };
 
   const loadProperty = async () => {
+    if (typeof window === 'undefined') return;
     const access_token = localStorage.getItem("access_token");
 
     try {

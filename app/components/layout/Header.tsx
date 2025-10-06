@@ -8,6 +8,8 @@ const Header = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const checkForLogin = () => {
+    if (typeof window === 'undefined') return null;
+    
     const fullName = localStorage.getItem('full_name');
     const access_token = localStorage.getItem('access_token');
 

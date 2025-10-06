@@ -60,13 +60,14 @@ export default function AuthModal({
       if (response.status === 200) {
         const data = response.data;
         const { access_token } = data;
-        const { first_name, last_name, email } = data.user;
+        const { first_name, last_name, email, class : userClass } = data.user;
 
         const fullName = first_name + " " + last_name;
 
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("email", email);
         localStorage.setItem("full_name", fullName);
+        localStorage.setItem("class", userClass);
 
         window.location.reload();
       }
@@ -115,6 +116,7 @@ export default function AuthModal({
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("email", signUpEmail);
         localStorage.setItem("full_name", fullName);
+        localStorage.setItem("class", userClass);
 
         window.location.reload();
         onOpenChange(false);

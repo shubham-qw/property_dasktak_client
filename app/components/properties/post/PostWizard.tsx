@@ -152,7 +152,7 @@ function WizardBody({ initialStep }: Props) {
         },
       };
 
-      const access_token = localStorage.getItem('access_token');
+      const access_token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
 
       const config = {
         method: "post",

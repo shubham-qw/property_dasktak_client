@@ -10,7 +10,7 @@ export default function PropertyDetailTracker({
   userId?: string;
 }) {
 
-  const email = localStorage.getItem('email');
+  const email = typeof window !== 'undefined' ? localStorage.getItem('email') : null;
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:4000");

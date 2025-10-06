@@ -1,11 +1,12 @@
 import PostWizard from "@/app/components/properties/post/PostWizard";
 
 type Props = {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default function PostPropertyPage({ searchParams }: Props) {
-  const raw = searchParams?.step;
+export default async function PostPropertyPage({ searchParams }: Props) {
+  const resolvedSearchParams = await searchParams;
+  const raw = resolvedSearchParams?.step;
   const rawStr =
     typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] : undefined;
 
