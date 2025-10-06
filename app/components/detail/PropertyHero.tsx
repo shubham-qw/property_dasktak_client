@@ -70,7 +70,8 @@ export default function PropertyHero({ property: initial }: { property: Property
           amenities: data.property_amenities,
           status: data.availability_status,
           location: data.locality + ", " + data.sub_locality,
-          media // 👈 backend can also return media array in future
+          media, // 👈 backend can also return media array in future,
+          price: data.price
         };
         setProperty(newProperty);
       }

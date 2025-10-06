@@ -150,6 +150,7 @@ function WizardBody({ initialStep }: Props) {
           parking_count: Number(data.reservedParking || 0),
           parking_type: data.parkingType || "",
         },
+        price : parseInt(data.price || "") || 0,
       };
 
       const access_token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;

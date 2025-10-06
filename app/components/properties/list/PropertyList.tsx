@@ -149,7 +149,7 @@ export default function PropertyList() {
                 return {
                 id: p.id,
                 title: p.title,
-                price: parseFloat(p.price_per_sqft),                // numeric price
+                price: parseFloat(p.price),                // numeric price
                 availability: p.availability_status,                // e.g. "ready_to_move"
                 propertyType: p.property_type,                      // e.g. "flat", "apartment"
                 city: p.city,
@@ -179,7 +179,7 @@ export default function PropertyList() {
                     <PropertyCard
                         key={p.id}
                         title={p.title}
-                        price={p.priceLabel}
+                        price={p.price.toString()}
                         size={`${p.sizeSqft.toLocaleString()} sq. ft`}
                         floor={p.floor}
                         location={`${p.city}, ${p.locality}`}
