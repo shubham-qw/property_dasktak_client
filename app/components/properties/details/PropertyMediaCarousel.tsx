@@ -36,38 +36,36 @@ export default function PropertyMediaCarousel({ items }: { items: MediaItem[] })
   if (!items.length) return null;
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full mb-18">
       {/* MAIN media area */}
-      <div className="relative">
-        {/* Maintain aspect ratio */}
-        <div className="relative h-[48vh] min-h-[360px] w-full overflow-hidden rounded-b-lg bg-black">
+      <div className="relative w-full overflow-hidden rounded-b-lg bg-black">
+        {/* Maintain responsive aspect ratio (16:9) */}
+        <div className="relative aspect-[16/9] w-full">
           {current.type === "image" ? (
             <img
               src={current.src}
               alt={current.alt ?? "Property media"}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain bg-black"
               loading="lazy"
             />
           ) : (
             <video
-              key={current.src}          // reset player when switching videos
+              key={current.src}
               ref={vidRef}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain bg-black"
               poster={current.poster}
               controls
               playsInline
-              // Safe defaults; you can change in the media item if needed
               muted={current.muted ?? false}
               loop={current.loop ?? false}
             >
-              <source src={current.src} />
-              {/* Optional: for HLS/DASH you’d use hls.js, but keeping it simple */}
+              <source src={current.src} />  
               Your browser does not support the video tag.
             </video>
           )}
         </div>
 
-        {/* Nav arrows (show only if >1) */}
+        {/* Nav arrows */}
         {items.length > 1 && (
           <>
             <button
@@ -87,6 +85,7 @@ export default function PropertyMediaCarousel({ items }: { items: MediaItem[] })
           </>
         )}
       </div>
+
 
       {/* THUMBNAILS */}
       {items.length > 1 && (
